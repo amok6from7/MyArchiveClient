@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios'
 
 interface Book {
   id: string
@@ -7,14 +8,11 @@ interface Book {
   evaluation: string
 }
 
-function App() {
+const SearchTitle = () => {
   const API_URL = process.env.REACT_APP_HEROKU_API
   const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
   const [books, setBooks] = useState(Array)
-  useEffect(() => {
-    //document.title = `clicked ${count} times`
-  })
 
   const searchBooks = async () => {
     if (title.length === 0) {
@@ -22,23 +20,19 @@ function App() {
       return
     }
     const api = `${API_URL}record/search-title?title=${title}`
-    const response = await fetch(api)
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(myJson) {
-      return JSON.stringify(myJson);
-    })
-    const res = JSON.parse(response)
-    setBooks(res);
-    if (res === 0) {
+    const response = await axios.get(api)
+      .then((res) => {
+        return res.data
+      })
+    setBooks(response)
+    if (response === 0) {
       setMessage('検索結果：０件')
     } else {
-      setMessage(`検索結果：${res.length}件`)
+      setMessage(`検索結果：${response.length}件`)
     }
   }
 
-  const handleChange = (e : any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
       case 'title':
         setTitle(e.target.value)
@@ -49,17 +43,21 @@ function App() {
   const Result = () => {
     return (
       <table>
-        <tr><th>title</th><th>name</th><th>eval</th><th></th></tr>
+        <thead>
+          <tr><th>title</th><th>name</th><th>eval</th><th></th></tr>
+        </thead>
+        <tbody>
       { books.map((data: any) => {
         return (
-          <tr>
-            <td>{data.title}</td>
-            <td>{data.name}</td>
-            <td>{data.evaluation}</td>
-            <td><a href="/record/edit">edit</a> <a href="/record/delete">delete</a></td>
-          </tr>
+            <tr key={data.ID}>
+              <td>{data.title}</td>
+              <td>{data.name}</td>
+              <td>{data.evaluation}</td>
+              <td><a href={`/record/edit/${data.ID}`}>edit</a> <a href="/record/delete">delete</a></td>
+            </tr>
         )
       })}
+       </tbody>
       </table>
     )
   }
@@ -69,11 +67,11 @@ function App() {
       <h2>search title</h2>
       <input type="text" name="title" value={title} onChange={handleChange}/>
       <button onClick={searchBooks}>search</button>
-      <button onClick={searchBooks}>new</button>
+      <a href="/new">add</a>
       { books.length !== 0 && <Result/>}
       <p>{message}</p>
     </div>
   );
 }
 
-export default App;
+export default SearchTitle;
