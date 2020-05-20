@@ -21,8 +21,10 @@ createStyles({
     display: 'flex',
     justifyContent: 'center',
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
+  button: {
+    '& > *': {
+      margin: theme.spacing(1),
+    }
   }
 })
 )
@@ -88,7 +90,6 @@ export const EditRecord: React.FC = () => {
     const GET_AUTHOR_URL = `${API_URL}author/search?name=${param}`
     await axios.get(GET_AUTHOR_URL).then(res => {
       const response = res.data
-      console.log(response)
       Array.from(response).forEach((e: any) => {
         const author = {
           value: e.ID,
@@ -98,6 +99,24 @@ export const EditRecord: React.FC = () => {
       });
     })
     return authors
+  }
+
+  const deleteRecord = async() => {
+    if (window.confirm("レコードを削除します")) {
+      const DELETE_RECORD_URL = `${API_URL}record/delete?id=${record_id}`
+      let params = new URLSearchParams()
+      params.append('id', record_id)
+      await axios.post(DELETE_RECORD_URL, params).then(res => {
+        if (res.data.Status === "OK") {
+          alert("削除が完了しました")
+          window.location.href="/"
+        } else {
+          alert("データ削除に失敗しました")
+        }
+      }).catch(res => {
+        console.error(res)
+      })
+    }
   }
 
   const classes = useStyles()
@@ -153,14 +172,21 @@ export const EditRecord: React.FC = () => {
             defaultValue={0}
           />
           <br />
-          <Button 
-            type="submit"
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Update
-          </Button>
+          <div className={classes.button}>
+            <Button 
+              type="submit"
+              variant="contained"
+              color="primary"
+            >
+              Update
+            </Button>
+            <Button 
+              variant="contained"
+              onClick={deleteRecord}
+            >
+              Delete
+            </Button>
+          </div>
         </form>
       )}
     </>
