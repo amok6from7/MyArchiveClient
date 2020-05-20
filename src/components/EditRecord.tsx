@@ -1,12 +1,35 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom'
-import { useForm, ErrorMessage, Controller } from 'react-hook-form'
+import { useParams } from 'react-router-dom'
+import { useForm, Controller } from 'react-hook-form'
 import AsyncSelect from 'react-select/async'
 import axios from 'axios'
+import { 
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  CircularProgress,
+  makeStyles,
+  createStyles,
+  Button 
+} from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert'
+
+const useStyles = makeStyles((theme) => 
+createStyles({
+  loading: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  }
+})
+)
 
 export const EditRecord: React.FC = () => {
   const { record_id } = useParams()
-  const { register, errors, handleSubmit, setValue, control } = useForm()
+  const { register, handleSubmit, setValue, control } = useForm()
   const [ isLoading, setIsLoading ] = useState(false)
   const [ message, setMessage ] = useState('')
 
@@ -49,9 +72,8 @@ export const EditRecord: React.FC = () => {
     if (response.Status === "OK") {
       setMessage("データ更新完了")
     } else {
-      setMessage("データ更新に失敗しました")
+      setMessage("データ更新に失敗しました")//TODO Alertの出しわけ
     }
-    console.log(response)
   }
 
   type authorOption = {
@@ -59,9 +81,7 @@ export const EditRecord: React.FC = () => {
     label: string
   }
 
-  const callApi = async (param: string) => {
-    console.log('call callapifunc')
-    console.log(typeof param)
+  const getAuthor = async (param: string) => {
     let authors: authorOption[] = []
     if (!param) return authors
     const GET_AUTHOR_URL = `${API_URL}author/search?name=${param}`
@@ -79,27 +99,67 @@ export const EditRecord: React.FC = () => {
     return authors
   }
 
+  const classes = useStyles()
   return (
     <>
-      <Link to='/'>HOME</Link>
-      <h2>Edit Record</h2>
-      <p>{message}</p>
+      <Typography variant="h6">Edit Record</Typography>
+      { message && <Alert severity="success">{message}</Alert> }
       {isLoading ? (
-        <div>Loading...</div>
+        <div className={classes.loading}>
+          <CircularProgress />
+        </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <input type="hidden" name="id" value={record_id} ref={register}/>
-          Title：<input type="text" name="title" ref={register({ required: true })} />
-          <ErrorMessage errors={errors} name="title" as="span" message="this is required"/><br/>
-          TitleKana：<input type="text" name="title_kana" ref={register}/><br/>
-          Eval：<input type="text" name="evaluation" ref={register({ required: true })}/>
-          <ErrorMessage errors={errors} name="evaluation" as="span" message="this is required"/><br/>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="title"
+            label="Title"
+            required
+            inputRef={register({ required: true })}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="title_kana"
+            label="TitleKana"
+            required
+            inputRef={register}
+          />
+          <Typography>Author</Typography>
           <Controller 
-            as={<AsyncSelect loadOptions={callApi}/>}
+            as={<AsyncSelect loadOptions={getAuthor}/>}
             name="author"
             control={control}
           />
-          <input type="submit" value="更新"/>
+          <Typography>Eval</Typography>
+          <Controller
+            as={
+              <Select>
+                <MenuItem value="0">-</MenuItem>
+                <MenuItem value="1">1</MenuItem>
+                <MenuItem value="2">2</MenuItem>
+                <MenuItem value="3">3</MenuItem>
+                <MenuItem value="4">4</MenuItem>
+                <MenuItem value="5">5</MenuItem>
+              </Select>
+            }
+            control={control}
+            name="evaluation"
+            defaultValue={0}
+          />
+          <br />
+          <Button 
+            type="submit"
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Update
+          </Button>
         </form>
       )}
     </>
