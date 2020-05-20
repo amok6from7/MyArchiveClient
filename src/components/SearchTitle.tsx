@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios'
+import { 
+  Typography, 
+  TextField, 
+  Button, 
+  TableContainer, 
+  TableCell, 
+  TableRow, 
+  TableHead, 
+  Paper, 
+  Table, 
+  TableBody, 
+  makeStyles, 
+  createStyles, 
+  Theme 
+} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit'
 
 interface Book {
   id: string
@@ -7,6 +23,16 @@ interface Book {
   name: string
   evaluation: string
 }
+
+const useStyles = makeStyles((theme: Theme) => 
+createStyles({
+  button: {
+    '& > *': {
+      margin: theme.spacing(1),
+    }
+  }
+})
+)
 
 const SearchTitle = () => {
   const API_URL = process.env.REACT_APP_HEROKU_API
@@ -40,34 +66,62 @@ const SearchTitle = () => {
     }
   }
 
+  const classes = useStyles()
+
   const Result = () => {
     return (
-      <table>
-        <thead>
-          <tr><th>title</th><th>name</th><th>eval</th><th></th></tr>
-        </thead>
-        <tbody>
-      { books.map((data: any) => {
-        return (
-            <tr key={data.ID}>
-              <td>{data.title}</td>
-              <td>{data.name}</td>
-              <td>{data.evaluation}</td>
-              <td><a href={`/record/edit/${data.ID}`}>edit</a> <a href="/record/delete">delete</a></td>
-            </tr>
-        )
-      })}
-       </tbody>
-      </table>
+      <TableContainer component={Paper}>
+        <Table size="small" >
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Author</TableCell>
+              <TableCell>Eval</TableCell>
+              <TableCell>Edit</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          { books.map((data: any) => {
+            return (
+              <TableRow key={data.ID}>
+                <TableCell>{data.title}</TableCell>
+                <TableCell>{data.name}</TableCell>
+                <TableCell>{data.evaluation}</TableCell>
+                <TableCell>
+                  <a href={`/record/edit/${data.ID}`}><EditIcon/></a>
+                </TableCell>
+              </TableRow>
+            )
+          })}
+          </TableBody>
+          
+        </Table>
+      </TableContainer>
     )
   }
   
   return (
     <div>
-      <h2>search title</h2>
-      <input type="text" name="title" value={title} onChange={handleChange}/>
-      <button onClick={searchBooks}>search</button>
-      <a href="/new">add</a>
+      <Typography variant="h6">Search Title</Typography>
+      <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="title"
+            label="Title"
+            required
+            onChange={handleChange}
+          />
+      <div className={classes.button}>
+        <Button 
+          variant="contained"
+          color="primary"
+          onClick={searchBooks}
+        >
+          Search
+        </Button>
+        <Button variant="contained"><a href="/new">add</a></Button>
+      </div>
       { books.length !== 0 && <Result/>}
       <p>{message}</p>
     </div>

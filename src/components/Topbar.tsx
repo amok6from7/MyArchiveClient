@@ -24,7 +24,7 @@ export default function Topbar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit">
-            <Link href="/" color="inherit">MY Archive App</Link>
+            <Link href="/" color="inherit">My Archive App</Link>
           </Typography>
         </Toolbar>
       </AppBar>  
