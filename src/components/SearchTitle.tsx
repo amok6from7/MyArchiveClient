@@ -76,8 +76,7 @@ const SearchTitle = () => {
         <Table size="small" >
           <TableHead>
             <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Author</TableCell>
+              <TableCell>Title/Author</TableCell>
               <TableCell>Eval</TableCell>
               <TableCell>Edit</TableCell>
             </TableRow>
@@ -86,8 +85,7 @@ const SearchTitle = () => {
           { books.map((data: any) => {
             return (
               <TableRow key={data.ID}>
-                <TableCell>{data.title}</TableCell>
-                <TableCell>{data.name}</TableCell>
+                <TableCell>{data.title}<br/>{data.name}</TableCell>
                 <TableCell>{data.evaluation}</TableCell>
                 <TableCell>
                   <a href={`/record/edit/${data.ID}`}><EditIcon/></a>
