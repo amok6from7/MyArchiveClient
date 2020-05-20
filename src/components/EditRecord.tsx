@@ -38,6 +38,7 @@ export const EditRecord: React.FC = () => {
       await getRecord()
     }
     f()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const API_URL = `${process.env.REACT_APP_HEROKU_API}`
