@@ -16,6 +16,8 @@ import {
   Theme 
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit'
+import SearchIcon from '@material-ui/icons/Search'
+import AddBoxIcon from '@material-ui/icons/AddBox'
 
 interface Book {
   id: string
@@ -117,10 +119,15 @@ const SearchTitle = () => {
           variant="contained"
           color="primary"
           onClick={searchBooks}
+          startIcon={<SearchIcon/>}
         >
           Search
         </Button>
-        <Button variant="contained"><a href="/new">add</a></Button>
+        <Button
+         variant="contained"
+         startIcon={<AddBoxIcon/>}>
+          <a href="/record/new">add</a>
+        </Button>
       </div>
       { books.length !== 0 && <Result/>}
       <p>{message}</p>

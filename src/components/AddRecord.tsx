@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, ErrorMessage } from 'react-hook-form'
 import AsyncSelect from 'react-select/async'
 import axios from 'axios'
 import { 
@@ -11,6 +11,7 @@ import {
   createStyles,
   Button 
 } from '@material-ui/core';
+import DoneIcon from '@material-ui/icons/Done'
 import Alert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => 
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) =>
 )
 
 export const AddRecord: React.FC = () => {
-  const { register, handleSubmit, control } = useForm()
+  const { register, handleSubmit, control, errors } = useForm()
   const [ message, setMessage ] = useState('')
 
   const API_URL = `${process.env.REACT_APP_HEROKU_API}`
@@ -34,14 +35,19 @@ export const AddRecord: React.FC = () => {
     params.append('evaluation', data.evaluation)
     params.append('author_id', data.author.value)
     const API_URL = `${process.env.REACT_APP_HEROKU_API}record/new`
-    const response = await axios.post(API_URL, params).then((res) => {
-      return res.data
+    await axios.post(API_URL, params).then((res) => {
+      if (res.data.Status === "OK") {
+        setMessage("データ登録完了")
+        setAlertType("success")
+      } else {
+        setMessage("データ登録に失敗しました")
+        setAlertType("error")
+      }
+    }).catch(res => {
+      setMessage("データ登録に失敗しました")
+      setAlertType("error")
+      console.error(res)
     })
-    if (response.Status === "OK") {
-      setMessage("データ登録完了")
-    } else {
-      setMessage("データ登録に失敗しました")//TODO Alertの出しわけ
-    }
   }
 
   type authorOption = {
@@ -67,11 +73,14 @@ export const AddRecord: React.FC = () => {
     return authors
   }
 
+  type AlertType = "success" | "info" | "warning" | "error" | undefined
+  const [alertType, setAlertType] = useState<AlertType>('success')
+
   const classes = useStyles()
   return (
     <>
       <Typography variant="h6">Add Record</Typography>
-      { message && <Alert severity="success">{message}</Alert> }
+      { message && <Alert severity={alertType}>{message}</Alert> }
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             variant="outlined"
@@ -93,10 +102,12 @@ export const AddRecord: React.FC = () => {
           />
           <Typography>Author</Typography>
           <Controller 
-            as={<AsyncSelect loadOptions={getAuthor}/>}
+            as={<AsyncSelect loadOptions={getAuthor} placeholder="search Author"/>}
             name="author"
+            rules={{ required: true }}
             control={control}
           />
+          <ErrorMessage errors={errors} name="author" message="Author is required" />
           <Typography>Eval</Typography>
           <Controller
             as={
@@ -119,6 +130,7 @@ export const AddRecord: React.FC = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            startIcon={<DoneIcon />}
           >
             Register
           </Button>

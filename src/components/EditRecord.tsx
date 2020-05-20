@@ -11,8 +11,14 @@ import {
   CircularProgress,
   makeStyles,
   createStyles,
-  Button 
+  Button, 
+  Dialog,
+  DialogContentText,
+  DialogContent,
+  DialogActions
 } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save'
+import DeleteIcon from '@material-ui/icons/Delete'
 import Alert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => 
@@ -44,7 +50,6 @@ export const EditRecord: React.FC = () => {
   }, [])
 
   const API_URL = `${process.env.REACT_APP_HEROKU_API}`
-  //const API_URL = 'http://localhost:8080/api/'
 
   const getRecord = async () => {
     setIsLoading(true)
@@ -74,8 +79,10 @@ export const EditRecord: React.FC = () => {
     })
     if (response.Status === "OK") {
       setMessage("データ更新完了")
+      setAlertType("success")
     } else {
-      setMessage("データ更新に失敗しました")//TODO Alertの出しわけ
+      setMessage("データ更新に失敗しました")
+      setAlertType("error")
     }
   }
 
@@ -101,29 +108,49 @@ export const EditRecord: React.FC = () => {
     return authors
   }
 
+  const [open, setOpen] = useState(false)
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClickClose = () => {
+    setOpen(false)
+  }
+
+  type AlertType = "success" | "info" | "warning" | "error" | undefined
+  const [alertType, setAlertType] = useState<AlertType>('success')
+
   const deleteRecord = async() => {
-    if (window.confirm("レコードを削除します")) {
       const DELETE_RECORD_URL = `${API_URL}record/delete?id=${record_id}`
       let params = new URLSearchParams()
       params.append('id', record_id)
       await axios.post(DELETE_RECORD_URL, params).then(res => {
         if (res.data.Status === "OK") {
-          alert("削除が完了しました")
-          window.location.href="/"
+          handleClickClose()
+          setMessage("削除が完了しました")
+          setAlertType("success")
+          setTimeout(() => {
+            window.location.href="/"
+          }, 1000);
         } else {
-          alert("データ削除に失敗しました")
+          handleClickClose()
+          setMessage("データ削除に失敗しました")
+          setAlertType("error")
         }
       }).catch(res => {
+        handleClickClose()
+        setMessage("データ削除に失敗しました")
+        setAlertType("error")
         console.error(res)
       })
-    }
   }
 
   const classes = useStyles()
   return (
     <>
       <Typography variant="h6">Edit Record</Typography>
-      { message && <Alert severity="success">{message}</Alert> }
+      { message && <Alert severity={alertType}>{message}</Alert> }
       {isLoading ? (
         <div className={classes.loading}>
           <CircularProgress />
@@ -177,16 +204,29 @@ export const EditRecord: React.FC = () => {
               type="submit"
               variant="contained"
               color="primary"
+              startIcon={<SaveIcon />}
             >
-              Update
+              SAVE
             </Button>
             <Button 
               variant="contained"
-              onClick={deleteRecord}
+              onClick={ handleClickOpen }
+              startIcon={<DeleteIcon />}
             >
               Delete
             </Button>
           </div>
+          <Dialog open={open} onClose={handleClickClose}>
+            <DialogContent>
+              <DialogContentText>
+                レコードを削除します
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClickClose} >Disagree</Button>
+              <Button onClick={deleteRecord} color="secondary" autoFocus>Agree</Button>
+            </DialogActions>
+          </Dialog>
         </form>
       )}
     </>
