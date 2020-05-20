@@ -43,10 +43,9 @@ const handleClose = () => {
             onClose={handleClose}
           >
             <MenuItem><a href="/">Search Title</a></MenuItem>
-            <MenuItem><a href="/record/new">Add Title</a></MenuItem>
+            <MenuItem><a href="/record/new">Add Record</a></MenuItem>
             <MenuItem>Search Author</MenuItem>
             <MenuItem>Add Author</MenuItem>
-
           </Menu>
           <Typography variant="h6" color="inherit">
             <Link href="/" color="inherit">My Archive App</Link>

@@ -27,13 +27,13 @@ interface Book {
 }
 
 const useStyles = makeStyles((theme: Theme) => 
-createStyles({
-  button: {
-    '& > *': {
-      margin: theme.spacing(1),
+  createStyles({
+    button: {
+      '& > *': {
+        margin: theme.spacing(1),
+      }
     }
-  }
-})
+  })
 )
 
 const SearchTitle = () => {
@@ -94,7 +94,6 @@ const SearchTitle = () => {
             )
           })}
           </TableBody>
-          
         </Table>
       </TableContainer>
     )
