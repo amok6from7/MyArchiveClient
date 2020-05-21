@@ -72,7 +72,7 @@ export const AddRecord: React.FC = (props: any) => {
       Array.from(response).forEach((e: any) => {
         const author = {
           value: e.ID,
-          label: e.Name,
+          label: e.name,
         }
         authors.push(author)
       })
