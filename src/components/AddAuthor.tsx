@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useLayoutEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import {
@@ -11,6 +11,7 @@ import {
 import DoneIcon from '@material-ui/icons/Done'
 import Alert from '@material-ui/lab/Alert'
 import { AlertType } from '../types/AlertType'
+import { AuthContext } from './Auth'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -20,9 +21,16 @@ const useStyles = makeStyles((theme) =>
   })
 )
 
-export const AddAuthor: React.FC = () => {
+export const AddAuthor: React.FC = (props: any) => {
   const { register, handleSubmit } = useForm()
   const [message, setMessage] = useState('')
+  const { currentUser } = useContext(AuthContext)
+
+  useLayoutEffect(() => {
+    currentUser === null && props.history.push('/login')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
+
   const onSubmit = async (data: any) => {
     let params = new URLSearchParams()
     params.append('name', data.name)

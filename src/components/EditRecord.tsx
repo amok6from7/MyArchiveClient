@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import AsyncSelect from 'react-select/async'
@@ -22,6 +22,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Alert from '@material-ui/lab/Alert'
 import { AlertType } from '../types/AlertType'
 import { AuthorOption } from '../types/AuthorOption'
+import { AuthContext } from './Auth'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -37,11 +38,17 @@ const useStyles = makeStyles((theme) =>
   })
 )
 
-export const EditRecord: React.FC = () => {
+export const EditRecord: React.FC = (props: any) => {
   const { record_id } = useParams()
   const { register, handleSubmit, setValue, control } = useForm()
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const { currentUser } = useContext(AuthContext)
+
+  useLayoutEffect(() => {
+    currentUser === null && props.history.push('/login')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
 
   useLayoutEffect(() => {
     const f = async () => {

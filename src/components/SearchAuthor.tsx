@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useLayoutEffect } from 'react'
 import axios from 'axios'
 import {
   Typography,
@@ -19,6 +19,7 @@ import {
 import EditIcon from '@material-ui/icons/Edit'
 import SearchIcon from '@material-ui/icons/Search'
 import AddBoxIcon from '@material-ui/icons/AddBox'
+import { AuthContext } from './Auth'
 
 interface Authors {
   ID: string
@@ -40,12 +41,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const SearchAuthor = () => {
+const SearchAuthor = (props: any) => {
   const API_URL = process.env.REACT_APP_HEROKU_API
   const [author, setAuthor] = useState('')
   const [message, setMessage] = useState('')
   const [authors, setAuthors] = useState(Array)
   const [isLoading, setIsLoading] = useState(false)
+  const { currentUser } = useContext(AuthContext)
+
+  useLayoutEffect(() => {
+    currentUser === null && props.history.push('/login')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
 
   const searchBooks = async () => {
     if (author.length === 0) {
