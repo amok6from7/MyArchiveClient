@@ -68,7 +68,6 @@ export const AddRecord: React.FC = (props: any) => {
     const GET_AUTHOR_URL = `${API_URL}author/search?name=${param}`
     await axios.get(GET_AUTHOR_URL).then((res) => {
       const response = res.data
-      console.log(response)
       Array.from(response).forEach((e: any) => {
         const author = {
           value: e.ID,
