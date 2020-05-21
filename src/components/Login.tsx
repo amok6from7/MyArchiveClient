@@ -24,9 +24,7 @@ const Login = (props: any) => {
   return (
     <>
       <Container>
-        <Typography variant="h6" style={{ marginTop: '0.5em' }}>
-          Login
-        </Typography>
+        <Typography variant="h6">Login</Typography>
         <FormControl margin="normal" fullWidth>
           <TextField
             style={{ marginTop: '0.5em' }}

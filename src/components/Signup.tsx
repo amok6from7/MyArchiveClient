@@ -24,9 +24,7 @@ const Signup = (props: any) => {
   return (
     <>
       <Container>
-        <Typography variant="h6" style={{ marginTop: '0.5em' }}>
-          Sign up
-        </Typography>
+        <Typography variant="h6">Sign up</Typography>
         <FormControl margin="normal" fullWidth>
           <TextField
             style={{ marginTop: '0.5em' }}
