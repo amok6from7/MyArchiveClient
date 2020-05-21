@@ -1,13 +1,10 @@
 import React, { useLayoutEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useForm, Controller } from 'react-hook-form'
-import AsyncSelect from 'react-select/async'
+import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import {
   Typography,
   TextField,
-  Select,
-  MenuItem,
   CircularProgress,
   makeStyles,
   createStyles,
@@ -21,7 +18,6 @@ import SaveIcon from '@material-ui/icons/Save'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Alert from '@material-ui/lab/Alert'
 import { AlertType } from '../types/AlertType'
-import { AuthorOption } from '../types/AuthorOption'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -37,15 +33,15 @@ const useStyles = makeStyles((theme) =>
   })
 )
 
-export const EditRecord: React.FC = () => {
-  const { record_id } = useParams()
-  const { register, handleSubmit, setValue, control } = useForm()
+export const EditAuthor: React.FC = () => {
+  const { author_id } = useParams()
+  const { register, handleSubmit, setValue } = useForm()
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
 
   useLayoutEffect(() => {
     const f = async () => {
-      await getRecord()
+      await getAuthor()
     }
     f()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,64 +49,42 @@ export const EditRecord: React.FC = () => {
 
   const API_URL = `${process.env.REACT_APP_HEROKU_API}`
 
-  const getRecord = async () => {
+  const getAuthor = async () => {
     setIsLoading(true)
-    const GET_RECORD_URL = `${API_URL}record/edit?id=${record_id}`
-    await axios.get(GET_RECORD_URL).then((res) => {
+    const GET_AUTHOR_URL = `${API_URL}author/edit?id=${author_id}`
+    await axios.get(GET_AUTHOR_URL).then((res) => {
       setIsLoading(false)
-      const record = res.data
-      if (record.length === 0 || record.ID === 0) {
+      const author = res.data
+      if (author.ID === 0) {
         setMessage('データ取得に失敗しました')
         setAlertType('error')
         setTimeout(() => {
-          window.location.href = '/'
+          window.location.href = '/author/search'
         }, 1000)
-      } else {
-        setValue([
-          { title: record[0].title },
-          { title_kana: record[0].title_kana },
-          { evaluation: record[0].evaluation },
-          { author: { value: record[0].author_id, label: record[0].name } },
-        ])
       }
+      setValue([{ name: author.name }, { name_kana: author.name_kana }])
     })
   }
 
   const onSubmit = async (data: any) => {
     let params = new URLSearchParams()
-    params.append('id', record_id)
-    params.append('title', data.title)
-    params.append('title_kana', data.title_kana)
-    params.append('evaluation', data.evaluation)
-    params.append('author_id', data.author.value)
-    const API_URL = `${process.env.REACT_APP_HEROKU_API}record/update`
+    params.append('id', author_id)
+    params.append('name', data.name)
+    params.append('name_kana', data.name_kana)
+    const API_URL = `${process.env.REACT_APP_HEROKU_API}author/update`
     const response = await axios.post(API_URL, params).then((res) => {
       return res.data
     })
     if (response.Status === 'OK') {
       setMessage('データ更新完了')
       setAlertType('success')
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 1000)
     } else {
       setMessage('データ更新に失敗しました')
       setAlertType('error')
     }
-  }
-
-  const getAuthor = async (param: string) => {
-    let authors: AuthorOption[] = []
-    if (!param) return authors
-    const GET_AUTHOR_URL = `${API_URL}author/search?name=${param}`
-    await axios.get(GET_AUTHOR_URL).then((res) => {
-      const response = res.data
-      Array.from(response).forEach((e: any) => {
-        const author = {
-          value: e.ID,
-          label: e.Name,
-        }
-        authors.push(author)
-      })
-    })
-    return authors
   }
 
   const [open, setOpen] = useState(false)
@@ -125,12 +99,12 @@ export const EditRecord: React.FC = () => {
 
   const [alertType, setAlertType] = useState<AlertType>('success')
 
-  const deleteRecord = async () => {
-    const DELETE_RECORD_URL = `${API_URL}record/delete`
+  const deleteAuthor = async () => {
+    const DELETE_AUTHOR_URL = `${API_URL}author/delete`
     let params = new URLSearchParams()
-    params.append('id', record_id)
+    params.append('id', author_id)
     await axios
-      .post(DELETE_RECORD_URL, params)
+      .post(DELETE_AUTHOR_URL, params)
       .then((res) => {
         if (res.data.Status === 'OK') {
           handleClickClose()
@@ -156,7 +130,7 @@ export const EditRecord: React.FC = () => {
   const classes = useStyles()
   return (
     <>
-      <Typography variant="h6">Edit Record</Typography>
+      <Typography variant="h6">Edit Author</Typography>
       {message && <Alert severity={alertType}>{message}</Alert>}
       {isLoading ? (
         <div className={classes.loading}>
@@ -164,13 +138,13 @@ export const EditRecord: React.FC = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input type="hidden" name="id" value={record_id} ref={register} />
+          <input type="hidden" name="id" value={author_id} ref={register} />
           <TextField
             variant="outlined"
             margin="normal"
             fullWidth
-            name="title"
-            label="Title"
+            name="name"
+            label="Name"
             required
             inputRef={register({ required: true })}
           />
@@ -178,34 +152,11 @@ export const EditRecord: React.FC = () => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="title_kana"
-            label="TitleKana"
+            name="name_kana"
+            label="NameKana"
             required
             inputRef={register}
           />
-          <Typography>Author</Typography>
-          <Controller
-            as={<AsyncSelect loadOptions={getAuthor} />}
-            name="author"
-            control={control}
-          />
-          <Typography>Eval</Typography>
-          <Controller
-            as={
-              <Select>
-                <MenuItem value="0">-</MenuItem>
-                <MenuItem value="1">1</MenuItem>
-                <MenuItem value="2">2</MenuItem>
-                <MenuItem value="3">3</MenuItem>
-                <MenuItem value="4">4</MenuItem>
-                <MenuItem value="5">5</MenuItem>
-              </Select>
-            }
-            control={control}
-            name="evaluation"
-            defaultValue={0}
-          />
-          <br />
           <div className={classes.button}>
             <Button
               type="submit"
@@ -225,11 +176,11 @@ export const EditRecord: React.FC = () => {
           </div>
           <Dialog open={open} onClose={handleClickClose}>
             <DialogContent>
-              <DialogContentText>レコードを削除します</DialogContentText>
+              <DialogContentText>作者を削除します</DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClickClose}>Disagree</Button>
-              <Button onClick={deleteRecord} color="secondary" autoFocus>
+              <Button onClick={deleteAuthor} color="secondary" autoFocus>
                 Agree
               </Button>
             </DialogActions>
@@ -240,4 +191,4 @@ export const EditRecord: React.FC = () => {
   )
 }
 
-export default EditRecord
+export default EditAuthor

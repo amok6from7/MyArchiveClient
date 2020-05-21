@@ -20,6 +20,12 @@ import EditIcon from '@material-ui/icons/Edit'
 import SearchIcon from '@material-ui/icons/Search'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 
+interface Authors {
+  ID: string
+  name: string
+  name_kana: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     loading: {
@@ -34,37 +40,36 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const SearchTitle = () => {
+const SearchAuthor = () => {
   const API_URL = process.env.REACT_APP_HEROKU_API
-  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
   const [message, setMessage] = useState('')
-  const [books, setBooks] = useState(Array)
+  const [authors, setAuthors] = useState(Array)
   const [isLoading, setIsLoading] = useState(false)
 
   const searchBooks = async () => {
-    if (title.length === 0) {
+    if (author.length === 0) {
       alert('検索文字を入力して下さい')
       return
     }
     setIsLoading(true)
-    const api = `${API_URL}record/search-title?title=${title}`
+    const api = `${API_URL}author/search?name=${author}`
     await axios.get(api).then((res) => {
       const data = res.data
-      setBooks(data)
+      setAuthors(data)
       if (data === 0) {
         setMessage('検索結果：０件')
       } else {
         setMessage(`検索結果：${data.length}件`)
       }
     })
-
     setIsLoading(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
-      case 'title':
-        setTitle(e.target.value)
+      case 'author':
+        setAuthor(e.target.value)
         break
     }
   }
@@ -72,29 +77,23 @@ const SearchTitle = () => {
   const classes = useStyles()
 
   const Result = () => {
-    if (books.length === 0) return <></>
+    if (authors.length === 0) return <></>
     return (
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Title/Author</TableCell>
-              <TableCell>Eval</TableCell>
+              <TableCell>Author</TableCell>
               <TableCell>Edit</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {books.map((data: any) => {
+            {authors.map((data: any) => {
               return (
                 <TableRow key={data.ID}>
+                  <TableCell>{data.name}</TableCell>
                   <TableCell>
-                    {data.title}
-                    <br />
-                    {data.name}
-                  </TableCell>
-                  <TableCell>{data.evaluation}</TableCell>
-                  <TableCell>
-                    <a href={`/record/edit/${data.ID}`}>
+                    <a href={`/author/edit/${data.ID}`}>
                       <EditIcon />
                     </a>
                   </TableCell>
@@ -109,13 +108,13 @@ const SearchTitle = () => {
 
   return (
     <div>
-      <Typography variant="h6">Title Search</Typography>
+      <Typography variant="h6">Author Search</Typography>
       <TextField
         variant="outlined"
         margin="normal"
         fullWidth
-        name="title"
-        label="Title"
+        name="author"
+        label="Author"
         required
         onChange={handleChange}
       />
@@ -129,7 +128,7 @@ const SearchTitle = () => {
           Search
         </Button>
         <Button variant="contained" startIcon={<AddBoxIcon />}>
-          <a href="/record/new">add</a>
+          <a href="/author/new">add</a>
         </Button>
       </div>
       {isLoading ? (
@@ -146,4 +145,4 @@ const SearchTitle = () => {
   )
 }
 
-export default SearchTitle
+export default SearchAuthor

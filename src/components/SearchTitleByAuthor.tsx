@@ -34,20 +34,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const SearchTitle = () => {
+const SearchTitleByAuthor = () => {
   const API_URL = process.env.REACT_APP_HEROKU_API
-  const [title, setTitle] = useState('')
+  const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [books, setBooks] = useState(Array)
   const [isLoading, setIsLoading] = useState(false)
 
   const searchBooks = async () => {
-    if (title.length === 0) {
+    if (name.length === 0) {
       alert('検索文字を入力して下さい')
       return
     }
     setIsLoading(true)
-    const api = `${API_URL}record/search-title?title=${title}`
+    const api = `${API_URL}record/search-author?name=${name}`
     await axios.get(api).then((res) => {
       const data = res.data
       setBooks(data)
@@ -63,8 +63,8 @@ const SearchTitle = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
-      case 'title':
-        setTitle(e.target.value)
+      case 'name':
+        setName(e.target.value)
         break
     }
   }
@@ -109,13 +109,13 @@ const SearchTitle = () => {
 
   return (
     <div>
-      <Typography variant="h6">Title Search</Typography>
+      <Typography variant="h6">Title Search By Author</Typography>
       <TextField
         variant="outlined"
         margin="normal"
         fullWidth
-        name="title"
-        label="Title"
+        name="name"
+        label="Name"
         required
         onChange={handleChange}
       />
@@ -146,4 +146,4 @@ const SearchTitle = () => {
   )
 }
 
-export default SearchTitle
+export default SearchTitleByAuthor
