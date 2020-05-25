@@ -10,8 +10,10 @@ import {
   makeStyles,
   createStyles,
   Button,
+  IconButton,
 } from '@material-ui/core'
 import DoneIcon from '@material-ui/icons/Done'
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import Alert from '@material-ui/lab/Alert'
 import { AlertType } from '../types/AlertType'
 import { AuthorOption } from '../types/AuthorOption'
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme) =>
 )
 
 export const AddRecord: React.FC = (props: any) => {
-  const { register, handleSubmit, control, errors } = useForm()
+  const { register, handleSubmit, control, errors, setValue } = useForm()
   const [message, setMessage] = useState('')
   const { currentUser } = useContext(AuthContext)
 
@@ -79,6 +81,24 @@ export const AddRecord: React.FC = (props: any) => {
     return authors
   }
 
+  const [title, setTitle] = useState('')
+  const getFurigawa = () => {
+    if (!title) return
+    const FURIGANA_API_URL = `${process.env.REACT_APP_FURIGANA_API_URL}`
+    let params = new URLSearchParams()
+    params.append('sentence', title)
+    params.append('app_id', `${process.env.REACT_APP_FURIGANA_API_ID}`)
+    params.append('output_type', 'hiragana')
+    axios
+      .post(FURIGANA_API_URL, params)
+      .then((res) => {
+        setValue('title_kana', res.data.converted)
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+  }
+
   const [alertType, setAlertType] = useState<AlertType>('success')
 
   const classes = useStyles()
@@ -95,7 +115,11 @@ export const AddRecord: React.FC = (props: any) => {
           label="Title"
           required
           inputRef={register({ required: true })}
+          onChange={(e) => setTitle(e.target.value)}
         />
+        <IconButton size="small" onClick={getFurigawa}>
+          <ArrowDownwardIcon fontSize="inherit" />
+        </IconButton>
         <TextField
           variant="outlined"
           margin="normal"
