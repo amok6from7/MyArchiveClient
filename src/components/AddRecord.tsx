@@ -92,7 +92,8 @@ export const AddRecord: React.FC = (props: any) => {
     axios
       .post(FURIGANA_API_URL, params)
       .then((res) => {
-        setValue('title_kana', res.data.converted)
+        const furigana = res.data.converted.replace(/\s/g, '')
+        setValue('title_kana', furigana)
       })
       .catch((e) => {
         console.error(e)
