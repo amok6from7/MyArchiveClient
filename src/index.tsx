@@ -15,10 +15,19 @@ import Login from './components/Login'
 import { AuthProvider } from './components/Auth'
 
 import * as serviceWorker from './serviceWorker'
-import { CssBaseline, Container } from '@material-ui/core'
+import { ThemeProvider } from '@material-ui/core/styles'
+import { CssBaseline, Container, createMuiTheme } from '@material-ui/core'
+
+const theme = createMuiTheme({
+  typography: {
+    button: {
+      textTransform: 'none',
+    },
+  },
+})
 
 ReactDOM.render(
-  <>
+  <ThemeProvider theme={theme}>
     <CssBaseline />
     <AuthProvider>
       <Topbar />
@@ -42,7 +51,7 @@ ReactDOM.render(
         </BrowserRouter>
       </Container>
     </AuthProvider>
-  </>,
+  </ThemeProvider>,
   document.getElementById('root')
 )
 
