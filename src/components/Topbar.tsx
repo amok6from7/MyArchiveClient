@@ -78,6 +78,9 @@ export default function Topbar(props: any) {
                 <MenuItem>
                   <a href="/author/new">Add Author</a>
                 </MenuItem>
+                <MenuItem>
+                  <a href="/analysis">Analysis Data</a>
+                </MenuItem>
               </Menu>
             </>
           )}

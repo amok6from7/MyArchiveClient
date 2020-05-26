@@ -13,6 +13,7 @@ import SearchTitleByAuthor from './components/SearchTitleByAuthor'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import { AuthProvider } from './components/Auth'
+import Graph from './components/Graph'
 
 import * as serviceWorker from './serviceWorker'
 import { ThemeProvider } from '@material-ui/core/styles'
@@ -47,6 +48,7 @@ ReactDOM.render(
             <Route exact path="/author/search" component={SearchAuthor} />
             <Route exact path="/author/new" component={AddAuthor} />
             <Route path="/author/edit/:author_id" component={EditAuthor} />
+            <Route exact path="/analysis" component={Graph} />
           </Switch>
         </BrowserRouter>
       </Container>
