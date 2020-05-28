@@ -66,7 +66,7 @@ const Graph = (props: any) => {
       ],
     },
   }
-  return <HorizontalBar data={data} options={options} />
+  return <HorizontalBar data={data} options={options} height={400} />
 }
 
 export default Graph
