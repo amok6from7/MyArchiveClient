@@ -83,7 +83,7 @@ export const AddRecord: React.FC = (props: any) => {
   }
 
   const [title, setTitle] = useState('')
-  const getFurigawa = async () => {
+  const getFurigana = async () => {
     const furigana = await FuriganaUtils.getFurigawa(title)
     setValue('title_kana', furigana)
   }
@@ -106,7 +106,7 @@ export const AddRecord: React.FC = (props: any) => {
           inputRef={register({ required: true })}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <IconButton size="small" onClick={getFurigawa}>
+        <IconButton size="small" onClick={getFurigana}>
           <ArrowDownwardIcon fontSize="inherit" />
         </IconButton>
         <TextField
