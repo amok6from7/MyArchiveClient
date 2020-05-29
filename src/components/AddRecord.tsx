@@ -18,6 +18,7 @@ import Alert from '@material-ui/lab/Alert'
 import { AlertType } from '../types/AlertType'
 import { AuthorOption } from '../types/AuthorOption'
 import { AuthContext } from './Auth'
+import FuriganaUtils from '../utils/FuriganaUtils'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -82,22 +83,9 @@ export const AddRecord: React.FC = (props: any) => {
   }
 
   const [title, setTitle] = useState('')
-  const getFurigawa = () => {
-    if (!title) return
-    const FURIGANA_API_URL = `${process.env.REACT_APP_FURIGANA_API_URL}`
-    let params = new URLSearchParams()
-    params.append('sentence', title)
-    params.append('app_id', `${process.env.REACT_APP_FURIGANA_API_ID}`)
-    params.append('output_type', 'hiragana')
-    axios
-      .post(FURIGANA_API_URL, params)
-      .then((res) => {
-        const furigana = res.data.converted.replace(/\s/g, '')
-        setValue('title_kana', furigana)
-      })
-      .catch((e) => {
-        console.error(e)
-      })
+  const getFurigawa = async () => {
+    const furigana = await FuriganaUtils.getFurigawa(title)
+    setValue('title_kana', furigana)
   }
 
   const [alertType, setAlertType] = useState<AlertType>('success')
