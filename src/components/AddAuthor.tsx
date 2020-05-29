@@ -7,11 +7,14 @@ import {
   makeStyles,
   createStyles,
   Button,
+  IconButton,
 } from '@material-ui/core'
 import DoneIcon from '@material-ui/icons/Done'
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import Alert from '@material-ui/lab/Alert'
 import { AlertType } from '../types/AlertType'
 import { AuthContext } from './Auth'
+import FuriganaUtils from '../utils/FuriganaUtils'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -22,7 +25,7 @@ const useStyles = makeStyles((theme) =>
 )
 
 export const AddAuthor: React.FC = (props: any) => {
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, setValue } = useForm()
   const [message, setMessage] = useState('')
   const { currentUser } = useContext(AuthContext)
 
@@ -57,6 +60,12 @@ export const AddAuthor: React.FC = (props: any) => {
       })
   }
 
+  const [name, setName] = useState('')
+  const getFurigana = async () => {
+    const furigana = await FuriganaUtils.getFurigawa(name)
+    setValue('name_kana', furigana)
+  }
+
   const [alertType, setAlertType] = useState<AlertType>('success')
 
   const classes = useStyles()
@@ -73,7 +82,11 @@ export const AddAuthor: React.FC = (props: any) => {
           label="Name"
           required
           inputRef={register({ required: true })}
+          onChange={(e) => setName(e.target.value)}
         />
+        <IconButton size="small" onClick={getFurigana}>
+          <ArrowDownwardIcon fontSize="inherit" />
+        </IconButton>
         <TextField
           variant="outlined"
           margin="normal"
