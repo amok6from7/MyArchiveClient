@@ -97,6 +97,9 @@ export const EditRecord: React.FC = (props: any) => {
     if (response.Status === 'OK') {
       setMessage('データ更新完了')
       setAlertType('success')
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 1000)
     } else {
       setMessage('データ更新に失敗しました')
       setAlertType('error')

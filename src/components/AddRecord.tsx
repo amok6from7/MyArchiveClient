@@ -53,6 +53,9 @@ export const AddRecord: React.FC = (props: any) => {
         if (res.data.Status === 'OK') {
           setMessage('データ登録完了')
           setAlertType('success')
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 1000)
         } else {
           setMessage('データ登録に失敗しました')
           setAlertType('error')
