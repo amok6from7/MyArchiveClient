@@ -124,6 +124,7 @@ const SearchAuthor = (props: any) => {
         label="Author"
         required
         onChange={handleChange}
+        autoComplete="off"
       />
       <div className={classes.button}>
         <Button

@@ -83,6 +83,7 @@ export const AddAuthor: React.FC = (props: any) => {
           required
           inputRef={register({ required: true })}
           onChange={(e) => setName(e.target.value)}
+          autoComplete="off"
         />
         <IconButton size="small" onClick={getFurigana}>
           <ArrowDownwardIcon fontSize="inherit" />
@@ -95,6 +96,7 @@ export const AddAuthor: React.FC = (props: any) => {
           label="NameKana"
           required
           inputRef={register}
+          autoComplete="off"
         />
         <Button
           type="submit"

@@ -183,6 +183,7 @@ export const EditRecord: React.FC = (props: any) => {
             label="Title"
             required
             inputRef={register({ required: true })}
+            autoComplete="off"
           />
           <TextField
             variant="outlined"
@@ -192,6 +193,7 @@ export const EditRecord: React.FC = (props: any) => {
             label="TitleKana"
             required
             inputRef={register}
+            autoComplete="off"
           />
           <Typography>Author</Typography>
           <Controller

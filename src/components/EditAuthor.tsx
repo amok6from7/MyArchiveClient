@@ -154,6 +154,7 @@ export const EditAuthor: React.FC = (props: any) => {
             label="Name"
             required
             inputRef={register({ required: true })}
+            autoComplete="off"
           />
           <TextField
             variant="outlined"
@@ -163,6 +164,7 @@ export const EditAuthor: React.FC = (props: any) => {
             label="NameKana"
             required
             inputRef={register}
+            autoComplete="off"
           />
           <div className={classes.button}>
             <Button

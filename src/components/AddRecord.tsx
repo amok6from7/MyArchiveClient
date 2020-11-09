@@ -108,6 +108,7 @@ export const AddRecord: React.FC = (props: any) => {
           required
           inputRef={register({ required: true })}
           onChange={(e) => setTitle(e.target.value)}
+          autoComplete="off"
         />
         <IconButton size="small" onClick={getFurigana}>
           <ArrowDownwardIcon fontSize="inherit" />
@@ -120,6 +121,7 @@ export const AddRecord: React.FC = (props: any) => {
           label="TitleKana"
           required
           inputRef={register}
+          autoComplete="off"
         />
         <Typography>Author</Typography>
         <Controller
