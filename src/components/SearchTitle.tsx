@@ -125,6 +125,7 @@ const SearchTitle = (props: any) => {
         label="Title"
         required
         onChange={handleChange}
+        autoComplete="off"
       />
       <div className={classes.button}>
         <Button
