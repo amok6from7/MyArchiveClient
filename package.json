@@ -17,7 +17,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^3.0.13",
     "axios": "^0.19.2",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "firebase": "^7.14.4",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.9.0",
